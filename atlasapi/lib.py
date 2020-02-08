@@ -1,9 +1,57 @@
-from isodate import Duration, duration_isoformat
+# Copyright (c) 2019 Matthew G. Monteleone
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from isodate import Duration, duration_isoformat, parse_datetime
+from isodate.isoerror import ISO8601Error
 from typing import Iterator
 import logging
 from enum import Enum
+from datetime import datetime
 
 logger = logging.getLogger('atlasapi.lib')
+
+
+class AtlasLogNames(Enum):
+    """
+    The name of the log file that you want to retrieve:
+
+    """
+    MONGODB = "mongodb.gz"
+    MONGOS = "mongos.gz"
+    MONGOD_AUDIT = "mongodb-audit-log.gz"
+    MONGOS_AUDIT = "mongos-audit-log.gz"
+
+
+class LogLine(object):
+    def __init__(self, raw_line):
+        self.raw_line = raw_line
+        try:
+            raw_line_data = self.raw_line.rstrip().split(maxsplit=4)
+            self.date: datetime = parse_datetime(raw_line_data[0])
+            self.level: str = raw_line_data[1]
+            self.facility: str = raw_line_data[2]
+            self.user: str = raw_line_data[3].replace('[', '').replace(']', '')
+            self.line: str = raw_line_data[-1]
+            self.type: str = "Full"
+        except IndexError:
+            raw_line_data = raw_line.rstrip().split(maxsplit=1)
+            self.date: datetime = parse_datetime(raw_line_data[0])
+            self.line: str = raw_line_data[-1]
+            self.type: str = "SHORT"
+        except ISO8601Error:
+            logger.error(f'Error Parsing line: {raw_line}')
+            pass
 
 
 class AtlasUnits(Enum):
@@ -72,6 +120,3 @@ class _GetAll(object):
 
 class _GetAllLeaf(_GetAll):
     is_leaf = True
-
-
-

@@ -18,8 +18,6 @@ atlasapi\.atlas_types module
     :undoc-members:
     :show-inheritance:
 
-
-
 atlasapi\.alerts module
 ------------------------
 
@@ -93,3 +91,18 @@ atlasapi\.specs module
     :undoc-members:
     :show-inheritance:
 
+atlasapi\.maintenance_window module
+-----------------------------------
+
+.. automodule:: atlasapi.maintenance_window
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+atlasapi\.lib module
+--------------------
+
+.. automodule:: atlasapi.lib
+    :members:
+    :undoc-members:
+    :show-inheritance:

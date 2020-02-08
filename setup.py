@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 
 setup(
     name='atlasapi',
-    version='0.10.1',
+    version='0.11.0',
     python_requires='>=3.6',
-    packages=find_packages(),
-    install_requires=['requests', 'python-dateutil', 'isodate', 'future', 'pytz','coolname'],
-
+    packages=find_packages(exclude=("tests",)),
+    install_requires=['requests', 'python-dateutil', 'isodate', 'future', 'pytz','coolname', 'nose'],
+    setup_requires=['wheel'],
     # Metadata
     author="Matthew G. Monteleone",
     author_email="mgm@mgm.dev",
@@ -37,6 +37,12 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
+    entry_points={
+        'console_scripts': [
+            #final script name:local package name:local function name
+            'atlascli=atlascli.cli:main',
+        ]
+    },
     extras_require={}
 
 )
